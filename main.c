@@ -47,8 +47,8 @@ static int flag_create = 0;
 static int flag_major = 0;
 static int flag_minor = 0;
 static const char *flag_path = "/";
-static char *flag_block_path = "/sys/block";
-static char *flag_dev_path = "/dev";
+static char *flag_block_path = NULL;
+static char *flag_dev_path = NULL;
 
 static void parse_args(int argc, char **argv) {
   while (1) {

@@ -29,7 +29,7 @@
 #define MAX_SLAVE_DEPTH 8
 
 static const char *kDefaultSearchPath = "/sys/block";
-static const char *kDefaultDevPath = "/dev";
+static const char *kDefaultDevPath = "/dev/block";
 
 /* Encode the root device structuring here for Chromium OS */
 static const char kActiveRoot[] = "/dev/ACTIVE_ROOT";
@@ -407,7 +407,7 @@ int rootdev(char *path, size_t size, bool full, bool strip) {
   dev_t _root_dev, *root_dev = &_root_dev;
 
   /* Yields the containing dev_t in st_dev. */
-  if (stat("/", &root_statbuf) != 0)
+  if (stat("/data", &root_statbuf) != 0)
     return -1;
 
   /* Some ABIs (like mips o32) are broken and the st_dev field isn't actually
