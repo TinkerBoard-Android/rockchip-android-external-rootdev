@@ -357,10 +357,11 @@ int rootdev_get_path(char *path, size_t size, const char *device,
   if (path_len != strlen(dev_path) + 1 + strlen(device))
     return -1;
 
-  // TODO(bsimonnet): We should check that |path| exists and is the right
-  // device. We don't do this currently as OEMs can add custom SELinux rules
-  // which may prevent us from accessing this.
-  // See b/24267261.
+  if (stat(path, &dev_statbuf) != 0)
+    return 1;
+
+  if (dev && dev != dev_statbuf.st_rdev)
+    return 2;
 
   return 0;
 }
