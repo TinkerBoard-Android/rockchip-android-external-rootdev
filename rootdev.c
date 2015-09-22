@@ -343,9 +343,8 @@ int rootdev_create_devices(const char *name, dev_t dev, bool symlink) {
 }
 
 int rootdev_get_path(char *path, size_t size, const char *device,
-                     dev_t dev, const char *dev_path) {
+                     const char *dev_path) {
   int path_len;
-  struct stat dev_statbuf;
 
   if (!dev_path)
     dev_path = kDefaultDevPath;
@@ -357,11 +356,10 @@ int rootdev_get_path(char *path, size_t size, const char *device,
   if (path_len != strlen(dev_path) + 1 + strlen(device))
     return -1;
 
-  if (stat(path, &dev_statbuf) != 0)
-    return 1;
-
-  if (dev && dev != dev_statbuf.st_rdev)
-    return 2;
+  // TODO(bsimonnet): We should check that |path| exists and is the right
+  // device. We don't do this currently as OEMs can add custom SELinux rules
+  // which may prevent us from accessing this.
+  // See b/24267261.
 
   return 0;
 }
@@ -397,7 +395,7 @@ int rootdev_wrapper(char *path, size_t size,
     rootdev_strip_partition(devname, size);
   }
 
-  res = rootdev_get_path(path, size, devname, *dev, dev_path);
+  res = rootdev_get_path(path, size, devname, dev_path);
 
   return res;
 }

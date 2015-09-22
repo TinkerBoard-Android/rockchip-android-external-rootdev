@@ -71,7 +71,6 @@ void rootdev_get_device_slave(char *slave, size_t size, dev_t *dev,
  * @path: char array to store the path
  * @size: size of @devpath
  * @device: name of the device
- * @dev: optional expected dev_t of the node.
  * @dev_path: path to dev tree. NULL for default (/dev)
  *
  * A @dev of 0 is ignored.
@@ -79,16 +78,14 @@ void rootdev_get_device_slave(char *slave, size_t size, dev_t *dev,
  * @path is populated for all return codes.
  * Returns 0 on success and non-zero on error:
  * -1 on unexpected errors (@path may be invalid)
- *  1 on no existing @path
- *  2 @path exists but the dev_t value is mismatched.
  *
  * Nb, this function does NOT search /dev for a match.  It performs a normal
- *     string concatenation and probes for the existence.  If udev has moved,
- *     or otherwise renamed, the device, a positive value is returned.
- *     The caller may then use the dev_t and @path to create the node with
- *     mknod(2).
+ *     string concatenation.
+ *     We can't check if the device actually exists as vendors may create an
+ *     SELinux context we don't know about for it (in which case, this function
+ *     would always fail).
  */
-int rootdev_get_path(char *path, size_t size, const char *device, dev_t dev,
+int rootdev_get_path(char *path, size_t size, const char *device,
                      const char *dev_path);
 
 const char *rootdev_get_partition(const char *dst, size_t len);
